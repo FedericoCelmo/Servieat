@@ -1,0 +1,14 @@
+body{
+    margin: 0;
+    background-color: none;
+    /*background: rgb(145, 216, 247);*/
+}
+.jumbotron{
+    padding: 10px;
+    margin: auto;
+    background-color: rgb(223, 241, 245, 0.3);
+    
+}
+#carouselExampleControls{
+    border-radius: 100%;
+}

@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Servieat | Menus
+{% endblock %}
+
+{% block styles %}
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+<link rel="stylesheet" href="{{url_for('.static', filename='menuComensal.css')}}">
+
+{% endblock %}
+
+{% block content %}
+<div>
+  <p>
+  </p>
+  <form id="contSearch" class="form-inline d-flex justify-content-center md-form form-sm mt-0" role="search" method="POST"
+    action="/buscarMenuComensal">    
+    <input id="buscar" class="form-control form-control-sm ml-3 w-75" name="buscar" type="search" placeholder="&#xF002; Busca tu comida favorita" style="font-family:Arial, FontAwesome"
+      aria-label="Search" title="Buscar en el menu">
+      <span id="searchclear" class="glyphicon glyphicon-remove-circle"></span>
+  </form>
+  <hr>
+</div>
+{% for m in menu.items %} 
+
+<div id="container">
+  <div class="product-image">
+    <h2>{{m.nombre[:23]}}</h2>
+    
+    <img src="{{ m.fotourl|default('/static/restblanco.png') }}" alt="img">  
+    <!-- 	product Information-->
+    <div class="info">
+      <h3>Descripción</h3>
+      <ul>
+        <p><strong></strong>{{m.descripcion[:100]}}</p>
+        <p><strong>De </strong>{{m.restaurantero.tipo}} <a id="link" href="/restaurante/{{m.restaurantero.idrestaurantero}}" title="Ver {{m.restaurantero.tipo}}" >"{{m.restaurantero.nombre}}"</a></p>
+        <p><strong>Precio: </strong>$ {{m.precio}}</p>
+        <p><strong>Presentación: </strong>{{m.presentacion}}</p>        
+      </ul>
+      <a id="btnver1" href="/verComida/{{m.idmenu}}" title="Ver más detalles" class="btn">Ver</a>
+      <a id="btnver" href="" title="Agregar al pedido" class="btn">Agregar</a>
+    </div>
+  </div>
+  <!--  End product image  -->
+</div>
+{% endfor %}
+<!--Paginación-->
+{% if menu.items %}
+<nav class="Page navigation example">
+  <ul id="paginacion" class="pagination justify-content-center">     
+    {% if menu.has_prev %}
+      <li  class="page-item"> <a id="previous" title="Página anterior" class="page-link btn" href="{{ url_for('menuComensal', page=menu.prev_num) }}">Anterior</a></li>
+    {% else %}
+      <li  class="page-item"><a id="previous" class="page-link btn disabled" href="#">Anterior</a></li>
+    {% endif %}
+
+    {% for page_num in menu.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+      {% if page_num %}     
+        {% if menu.page == page_num %}
+          <li class="page-item active"> <a id="page-active"  class="page-link" href="{{ url_for('menuComensal', page=page_num) }}" title="Página {{page_num}}">{{ page_num }}</a></li>
+        {% else %}
+          <li class="page-item"> <a id="page"  class="page-link" href="{{ url_for('menuComensal', page=page_num) }}" title="Página {{page_num}}">{{ page_num }}</a></li>
+        {% endif %}
+      {% else %}
+      
+      {% endif %}
+    {% endfor %}
+      
+    {% if menu.has_next %}
+      <li class="page-item"> <a id="next" title="Siguiente página" class="page-link btn" href="{{ url_for('menuComensal', page=menu.next_num) }}">Siguiente</a></li>
+    {% else %}
+      <li class="page-item"><a id="next" class="page-link btn disabled" href="#">Siguiente</a></li>
+    {% endif %}           
+  </ul>
+</nav> 
+{% else %}
+{% endif %}
+<span class="ir-arriba" title="Ir arriba de la página"><i class="fa fa-arrow-up" aria-hidden="true"></i></span>
+<script>
+  $(document).ready(function(){
+ 
+ $('.ir-arriba').click(function(){
+   $('body, html').animate({
+     scrollTop: '0px'
+   }, 300);
+ });
+
+ $(window).scroll(function(){
+   if( $(this).scrollTop() > 0 ){
+     $('.ir-arriba').slideDown(300);
+   } else {
+     $('.ir-arriba').slideUp(300);
+   }
+ });
+
+});
+</script>
+{% endblock %}

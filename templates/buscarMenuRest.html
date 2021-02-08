@@ -1,0 +1,153 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}
+Servieat | {{res.tipo}} {{res.nombre}}
+{% endblock %}
+
+{% block styles %}
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://kit.fontawesome.com/5760abe377.js" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+
+<link rel="stylesheet" href="{{url_for('.static', filename='restaurante.css')}}">
+{% endblock %}
+
+{% block content %}
+
+{% set now = time.strftime('%H:%M %p') %}
+{% set ini = res.horarioinicial.strftime('%H:%M %p') %}
+{% set fin = res.horariocierre.strftime('%H:%M %p') %}
+      
+<nav id="navigation">
+    <div class="container">
+        <div class="placeholder">           
+			<div class="parallax-window" data-parallax="scroll" data-image-src="">               
+				<div class="tm-header">
+                    <div class="row" id="horario">
+                        {% if  ini <= now and fin <= now %}                        
+                          <h6 id="abierto"><i class="fa fa-circle"></i> Abierto Ahora</h6>                       
+                        {% else %}                       
+                          <h6 id="cerrado"><i class="fa fa-circle"></i> Cerrado</h6>                 
+                        {% endif %} 
+                    </div>
+					<div class="row tm-header-inner">                      
+						<div class="col-md-6 col-12">
+							<img src="{{ res.fotourl|default('/static/restblanco.png') }}" alt="Logo" class="tm-site-logo" /> 
+							<div class="tm-site-text-box">
+								<h1 class="tm-site-title">{{res.nombre}}</h1>
+                                                              
+							</div>
+						</div>
+                        <nav class="col-md-6 col-12 tm-nav">
+                            <ul class="social">
+                                <li><a class="facebook" href="{{res.facebook}}" title="Siguenos en Facebook"><i class="fa fa-facebook"></i></a></li>
+                                <li><a class="url" href="{{res.url}}" title="Vistanos en nuestra página web"><i class="fa fa-globe"></i></a></li>                              
+                            </ul>
+                        </nav>
+					</div>
+				</div>
+			</div>
+		</div>       
+    </div><!-- .container close -->
+</nav><!-- header close -->
+
+    
+<!--
+      Slider start
+      ============================== -->
+
+<!--price start============================ -->
+<section id="price">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="block">                                          
+                    {% if menu %} 
+                    <h1 id="menu" class="heading wow fadeInUp" >Resultados de la búsqueda para: {{buscar}}   
+                        </h1> 
+                        <p><a type="button" class="btnRegresar2" href="/restaurante/{{res.idrestaurantero}}" role="button" title="Regresar a la página principal">Regresar</a></p>                   
+                        <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" method="POST" action="/buscarMenuRest/{{res.idrestaurantero}}">                          
+                            <input id="buscar" class="form-control form-control-sm ml-3 w-75" name="buscar" type="search" placeholder="&#xF002; Busca tu comida favorita" style="font-family:Arial, FontAwesome"
+                            aria-label="Search" title="Buscar en el menu" value={{buscar}}>
+                        </form>              
+                    <div class="pricing-list">
+                        <ul>                          
+                              {% for m in menu %}  
+                                <li class="wow fadeInUp">
+                                <div class="item">
+                                    <div class="item-title">
+                                        <h2>{{m.nombre}} ({{m.tipo}})</h2>
+                                        <div class="border-bottom"></div>
+                                        <span>$ {{m.precio}}</span>
+                                    </div>
+                                    <p>{{m.descripcion}}</p> 
+                                    <p>
+                                        <a type="button" class="btn btn-light-info" href="#" role="button" title="Agregar al pedido">Agregar</a>
+                                        <a id="btnDetalles" type="button" class="btn btn-light-info" href="/verComida/{{m.idmenu}}" role="button" title="Ver más detalles">Ver</a>
+                                    </p>
+                                </div>
+                                </li>                                            
+                            {% endfor %}                                                                                                                                     
+                        </ul>      
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+                                {% if menu.has_prev %}
+                                  <li class="page-item"> <a href="{{ url_for('/restaurante/{{r.idrestaurantero}}', page=menu.prev_num) }}">Previous</a></li>
+                                {% else %}
+                                  <li class="page-item"><a class="page-link btn disabled" href="#">Previous</a></li>
+                                {% endif %}
+            
+            
+                                {% if menu.has_next %}
+                                  <li class="page-item"> <a  href="{{ url_for('/restaurante/{{r.idrestaurantero}}', page=menu.next_num) }}">Next</a></li>
+                                {% else %}
+                                  <li class="page-item"><a class="page-link btn disabled" href="#">Next</a></li>
+                                {% endif %}           
+                            </ul>
+                          </nav>                 
+                        
+                    </div>  
+                    {% else %}                        
+                       <p id="result">Parece que tu comida favorita no se encuentra aquí</p>  
+                       <p><a type="button" class="btnRegresar" href="/restaurante/{{res.idrestaurantero}}" role="button" title="Regresar a la página principal">Regresar</a></p>           
+                    {% endif %}                  
+                </div>
+                {% for page_num in menu.pages %}
+                  {% if page_num %}
+                    <a class="btn btn-outline-info mb-4" href="{{ url_for('/restaurante/{{r.idrestaurantero}}', page=page_num)}}"> {{ page_num }}</a>
+                  {% else%}
+                         ...
+                  {% endif %}
+                {% endfor %}
+            </div><!-- .col-md-12 close -->
+        </div><!-- .row close -->
+    </div><!-- .containe close -->
+</section><!-- #price close -->
+
+
+
+<!--
+{% for m in menu %}
+
+{{m.nombre}}
+{{m.descripcion}}
+$ {{m.precio}}
+{{m.estatus}}
+<a href="#" class="btn btn-success" title="Editar seleccionado">Agregar</a>
+
+
+{% endfor %}
+-->
+<script>
+   
+</script>
+<script>
+  
+</script>
+{% endblock %}

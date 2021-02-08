@@ -1,0 +1,37 @@
+.card-body{
+    align-content: center;
+}
+
+#imagenPerfil{
+    height: 400px;
+    width: 400px;
+    display:block;
+    margin:auto;
+}
+
+#botonDir{ 
+    display: block;
+    margin: auto;
+}
+.form-group #cargarImagen{
+    height: 50px;
+    width: 400px;
+    display:block;
+    margin:auto;
+}
+.btn-secondary{
+    height: auto;
+    width: 100px;
+    display: block;
+    margin: auto;
+}
+.card{
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+   
+}
+#cabezera{
+    box-shadow: 0 6px 6px rgba(0, 0, 0, 0.3);
+    border-radius: 0;
+}

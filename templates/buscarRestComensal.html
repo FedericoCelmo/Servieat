@@ -1,0 +1,123 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Servieat | Restaurantes
+{% endblock %}
+
+{% block styles %}
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link rel="stylesheet" href="{{url_for('.static', filename='restaurantesComensal.css')}}">
+
+{% endblock %}
+
+{% block content %}
+
+<div>
+    <p>
+    </p>
+    <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" method="POST"
+        action="/buscarRestaurantesComensal">
+        <input id="buscar" class="form-control form-control-sm ml-3 w-75" name="buscar" type="search" placeholder="&#xF002; Busca tu restaurante favorito" style="font-family:Arial, FontAwesome"
+            aria-label="Search" title="Buscar en el menu" value={{buscar}}>
+    </form>
+    <hr>
+</div>
+{% if rest %}
+<h1 id="resultado" class="heading wow fadeInUp" >Resultados de la búsqueda para: {{buscar}}   </h1>
+<div id="result">
+    <p><a type="button" class="btnRegresarTop" href="/restaurantesComensal" role="button" title="Regresar a Restaurantes">Regresar</a></p>          
+</div>
+  {% for r in rest %}
+<div class="card-container">
+    <span class="pro">{{r.tipo}}</span>
+  <span class="pro2">
+    {% if r.megustarest.count() == 1%}
+      {{r.megustarest.count()}} seguidor
+    {% else %}
+      {{r.megustarest.count()}} seguidores
+    {% endif %}
+  </span>
+  
+    {% for m in me %}
+   {% if m.restaurantero_idrestaurantero == r.idrestaurantero and m.comensal_idcomensal == datos.idcomensal%}
+     {% if m.estatus == 'Me Gusta' %}
+     <span class="pro3" title="Lo tienes en tus favoritos">
+     <i class="fa fa-check-circle" aria-hidden="true"></i>
+     </span>
+     {% endif %}
+   {%else%}
+  
+   {% endif %}
+   {% endfor %}
+  
+  <img class="round" src="{{ r.fotourl|default('/static/restblanco.png') }}" alt="user" />
+  <h3>{{r.nombre}}</h3>
+  <small>
+  {{r.tipo}}
+  </small>
+  <p>{{r.descripcion[:40]}} ...</p>
+  
+  <p><small>{{r.horario}}</small></p>
+  
+  <div class="buttons">
+    <a id="btn" role="button" href="/restaurante/{{r.idrestaurantero}}" class="primary" title="Ver {{r.tipo}}">
+      Ver
+    </a>
+  {% set total=menu|length %}
+  </div>
+  <div class="skills">
+    <p id="font"> 
+      {% if r.menu.count() == 1%}
+        {{r.nombre[:15]}}, oferta {{r.menu.count()}} comestible
+      {% else %}
+        {{r.nombre[:15]}}, oferta {{r.menu.count()}} comestibles
+      {% endif %}
+    </p>
+    <ul>
+    </ul>
+  </div>
+</div>
+{% endfor %}
+{% else %}
+<div id="result">
+    <img id="img" src="/static/oops.gif" alt="">
+    <h1 id="sinResultado" class="heading wow fadeInUp" >¡Ops! Parece que tu restaurante favorito no se encuentra por aquí</h1>
+    <p><a type="button" class="btnRegresar" href="/restaurantesComensal" role="button" title="Regresar a Restaurantes">Regresar</a></p>          
+</div>
+{% endif %}
+
+<span class="ir-arriba" title="Ir arriba de la página"><i class="fa fa-arrow-up" aria-hidden="true"></i></span>
+<script>
+  $(document).ready(function(){
+ 
+ $('.ir-arriba').click(function(){
+   $('body, html').animate({
+     scrollTop: '0px'
+   }, 300);
+ });
+
+ $(window).scroll(function(){
+   if( $(this).scrollTop() > 0 ){
+     $('.ir-arriba').slideDown(300);
+   } else {
+     $('.ir-arriba').slideUp(300);
+   }
+ });
+
+});
+</script>
+
+<script>
+    window.onload = function () {
+        var contenedor = document.getElementById('contenedor-carga');
+        contenedor.style.visibility = 'hidden';
+        contenedor.style.opacity = '0';
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends "layout2.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}
+Servieat | Gestión Menu
+{% endblock %}
+
+{% block styles %}
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link rel="stylesheet" href="{{url_for('.static', filename='home.css')}}">
+
+{% endblock %}
+
+{% block content %}
+
+
+<div class="card">
+    <div class="card-header">
+        Gestión de Menus
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">Menu de: "{{datos.nombre}}"</h5>
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" action="/gestionMenu" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+                    <div class="form-row">
+                        <div class="form-group col-md-8">
+                            <label for="text">Nombre</label>
+                            {{ wtf.form_field(form.nombre) }}
+                        </div>                   
+                    </div>       
+                    <div class="form-row">
+                        <div class="form-group col-md-8">
+                            <label for="exampleFormControlTextarea1">Descripción</label>
+                            {{ wtf.form_field(form.descripcion) }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-2">                                                     
+                                {{ wtf.form_field(form.estatus) }} 
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2">                                                    
+                                {{ wtf.form_field(form.tipo) }} 
+                            </select>
+                        </div>
+                        
+                        <div class="form-group col-md-2">                                                  
+                            {{ wtf.form_field(form.precio) }} 
+                        </div>
+                        <div class="form-group col-md-2">                                                  
+                            {{ wtf.form_field(form.presentacion) }} 
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-8">
+                            <div class="custom-file">                              
+                                    <label for="inputFile">Imagen de referencia</label>
+                                    <input id="cargarImagen" type="file" class="form-control-file" name="imagenFile"
+                                        accept=".jpg,.png,.jpeg" required>
+                                    <div class="invalid-feedback">Por favor, selecciona una imagen</div>                                                             
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <button type="submit" class="btn btn-info btn-sm">Agregar</button>
+            </form>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Lista de menu</h5>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">No.</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Descripción</th>
+                        <th scope="col">Precio</th>
+                        <th scope="col">Estatus</th>
+                        <th scope="col">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in menu %}
+                    <tr>
+                        <th scope="row">{{loop.index}}</th>
+                        <td editable-td  field="nombres">
+                            {{m.nombre}}
+                        </td>
+                        <td>{{m.descripcion}}</td>
+                        <td>$ {{m.precio}}</td>
+                        <td>{{m.estatus}}</td>
+                        <td><a href="#" class="btn btn-info btn-sm" title="Editar seleccionado">Editar</a>
+                            <a  href="/deleteMenu/{{m.idmenu}}" onclick="return confirm('¿Estás seguro que deseas eliminar la comida seleccionada: {{m.nombre}}?');" class="btn btn-danger" title="Eliminar seleccionado">Eliminar</a>                       
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

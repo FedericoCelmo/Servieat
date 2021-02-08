@@ -1,0 +1,238 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}
+Servieat | {{menu.nombre}}
+{% endblock %}
+
+{% block styles %}
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://kit.fontawesome.com/5760abe377.js" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+
+<link rel="stylesheet" href="{{url_for('.static', filename='verComida.css')}}">
+{% endblock %}
+
+{% block content %}
+
+<main>
+    <div id="cardMain" class="card">
+        <div class="card__title">
+            <div class="icon">
+                <a href="javascript: history.go(-1)" title="Regresar"><i class="fa fa-arrow-left"></i></a>
+            </div>
+            <h3>{{menu.tipo}}</h3>
+            {% if me %}
+              {% if 'Me Gusta' in me.estatus %}          
+                <form method="POST" action="/noMeGustaComida/{{menu.idmenu}}" enctype="multipart/form-data">
+                  <button type="submit" class="btnMeGusta" title="Quitar de tu lista de comidas favoritas"><i id="iconoFav"
+                    class="fa fa-heart" aria-hidden="true"></i></buttom>
+                </form>
+              {% else %}           
+                <form method="POST" action="/meGustaComida/{{menu.idmenu}}" enctype="multipart/form-data">
+                  <button type="submit" class="btnMeGusta" title="Añadir a tu lista de comidas favoritas"><i id="iconoNoFav" class="fa fa-heart-o"
+                            aria-hidden="true"></i></buttom>               
+                </form>                     
+              {% endif %}
+            {% else %}           
+              <form method="POST" action="/meGustaComida/{{menu.idmenu}}" enctype="multipart/form-data">
+                <button type="submit" class="btnMeGusta" title="Añadir a tu lista de comidas favoritas"><i id="iconoNoFav" class="fa fa-heart-o"
+                            aria-hidden="true"></i></buttom>                
+            </form>            
+            {% endif %}
+        </div>
+        <div class="card__body">
+            <div class="half">
+                <div class="featured_text">
+                    <h1>{{menu.nombre}}</h1>
+                    <p class="price">$ {{menu.precio}}/<span class="sub">{{menu.presentacion}}</span></p>
+                    
+                </div>
+                <div class="image">
+                    <img src="{{menu.fotourl}}" alt="">
+                </div>
+            </div>
+            <div class="half">
+              <div id="cardMainDescription" class="card">
+                <div id="cardDescription" class="card-body">
+                  <div class="description">
+                    <div id="cardDescription" class="card">
+                      <div id="cardDescription" class="card-body">
+                        <h5 class="card-title">Detalles</h5>
+                        <p>{{menu.descripcion}}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="cardStock" class="card">
+                    <div class="card-body">
+                      <span class="stock"><i class="fa fa-check-square" aria-hidden="true"></i> {{menu.estatus}}</span>
+                      <p></p>
+                      <span class="plus"><i class="fa fa-plus-square" aria-hidden="true"></i> 20 veces ordenada </span>
+                      <p></p>
+                      {% if total == 1 %}
+                        <span class="fav"><i class="fa fa-heart" aria-hidden="true"></i> {{total}} persona lo tiene de favorito </span>                    
+                      {% else %}
+                        <span class="fav"><i class="fa fa-heart" aria-hidden="true"></i> {{total}} personas lo tienen de favoritos<br></span>                       
+                      {% endif %}                      
+                    </div>
+                  </div>
+            
+                  <div class="reviews">
+                    <div id="cardGroup" class="card-group">
+                      <div id="cardOrden" class="card">
+                        <div class="card-body">                                                 
+                        </div>
+                      </div>
+                      <div id="cardFav" class="card">
+                        <div class="card-body">                          
+                      </div>                      
+                    </div>                   
+                  </div>
+                </div>               
+            </div>
+            <div class="card__footer">
+              <div class="recommend">
+                <p>De</p>
+                <h3><a id="rest" title="Visitar {{menu.restaurantero.nombre}}"
+                    href="/restaurante/{{menu.restaurantero.idrestaurantero}}">{{menu.restaurantero.tipo}}
+                    "{{menu.restaurantero.nombre}}"</a></h3>
+              </div>
+              <div class="action">
+                <form action="">
+                  <button id="agregar" type="button" title="Agregar al pedido">Agregar</button>
+                </form>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+        
+        <div id="footerCom" class="card__footer">
+            <div id="comentarios"><h3>Comentarios {% if totalComentarios == 0 %}{% else %} {% if totalComentarios == 1 %}({{totalComentarios}} comentario){% else %}({{totalComentarios}} comentarios){% endif %}{% endif %}</h3></div>
+        
+        <div class="comment_block">
+            <!-- used by #{user} to create a new comment -->
+            <div class="create_new_comment">
+                <!-- current #{user} avatar -->
+                <div class="user_avatar">
+                     <img src="{{ datos.fotourl|default('/static/perfil02blanco.png') }}">
+                </div><!-- the input field --><div class="input_comment">
+                    <form method="POST" action="/comentarMenu/{{menu.idmenu}}">
+                      <input type="text"  minlength="4" maxlength="200" placeholder="Escribe que te pareció..." name="comentario" required>
+                    </form>
+                </div>
+            </div>
+            {% if comen.items %}
+             <!-- new comment -->
+             {% for c in comen.items %}           
+            <div id="infinite" class="new_comment">
+                <!-- build comment -->
+                <ul class="user_comment">
+                    <!-- current #{user} avatar -->
+                    <div class="user_avatar">                       
+                        <img src="{{ c.comensal.fotourl|default('/static/perfil02blanco.png') }}">
+                    </div><!-- the comment body --><div class="comment_body">
+                        <p>{{c.comentario}}</p>
+                    </div>
+                     <!-- comments toolbar -->
+                    <div class="comment_toolbar">
+                         <!-- inc. date and time -->
+                        <div class="comment_details">
+                            <ul>
+                                <li><i class="fa fa-clock-o"></i> {{c.fecha.strftime('%H:%M %p')}}</li>
+                                <li><i class="fa fa-calendar"></i> {{c.fecha.strftime('%d/%m/%Y')}}</li>
+                                <li><i class="fa fa-user"></i> <span class="user">{{c.comensal.user.username}}</span></li>
+                                {% if datos.user_iduser == c.comensal_user_iduser %}
+                                  <li><a id="eliminar" href="/deleteComentarioMenu/{{c.idcomentariomenu}}/{{menu.idmenu}}" onclick="return confirm('¿Estás seguro que deseas eliminar el comentario?');" 
+                                    title="Eliminar comentario"><i class="fa fa-trash"></i><span class="user"></span></a></li>
+                                
+                                {% endif %}
+                            </ul>                 
+                        </div>
+                    </div>
+                </ul>       
+            </div>
+            {% endfor %}
+            {% else %}
+            <p>Parece que este producto aún no tiene comentarios, ¡Sé el primero en comentar!</p>
+            {% endif %}
+        </div>
+    </div>
+<!--Paginación-->
+{% if comen.items %}
+<nav class="Page navigation example">
+  <ul id="paginacion" class="pagination justify-content-center">     
+    {% if comen.has_prev %}
+      <li  class="page-item"> <a id="previous" title="Página anterior" class="page-link btn" href="{{ url_for('verComida',id=menu.idmenu ,page=comen.prev_num) }}">Anterior</a></li>
+    {% else %}
+      <li  class="page-item"><a id="previous" class="page-link btn disabled" href="#">Anterior</a></li>
+    {% endif %}
+    {% for page_num in comen.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+      {% if page_num %}     
+        {% if comen.page == page_num %}
+          <li class="page-item active"> <a id="page-active"  class="page-link" href="{{ url_for('verComida' ,id=menu.idmenu, page=page_num) }}" title="Página {{page_num}}">{{ page_num }}</a></li>
+        {% else %}
+          <li class="page-item"> <a id="page"  class="page-link" href="{{ url_for('verComida' ,id=menu.idmenu, page=page_num) }}" title="Página {{page_num}}">{{ page_num }}</a></li>
+        {% endif %}
+      {% else %}
+      
+      {% endif %}
+    {% endfor %}     
+    {% if comen.has_next %}
+      <li class="page-item"> <a id="next" title="Siguiente página" class="page-link btn" href="{{ url_for('verComida' ,id=menu.idmenu, page=comen.next_num) }}">Siguiente</a></li>
+    {% else %}
+      <li class="page-item"><a id="next" class="page-link btn disabled" href="#">Siguiente</a></li>
+    {% endif %}           
+  </ul>
+</nav> 
+{% else %}
+
+{% endif %}
+<!--End Paginacion-->
+</main>
+<span class="ir-arriba" title="Ir arriba de la página"><i class="fa fa-arrow-up" aria-hidden="true"></i></span>
+<script>
+  $(document).ready(function(){
+ 
+ $('.ir-arriba').click(function(){
+   $('body, html').animate({
+     scrollTop: '0px'
+   }, 300);
+ });
+
+ $(window).scroll(function(){
+   if( $(this).scrollTop() > 0 ){
+     $('.ir-arriba').slideDown(300);
+   } else {
+     $('.ir-arriba').slideUp(300);
+   }
+ });
+
+});
+</script>
+ 
+
+
+
+<script type="text/javascript">
+    $(window).scroll(() => {
+      var current_y = $(window).scrollTop();
+      var window_height = $(window).height();
+      var document_height = $(document).height();
+      
+      if (current_y + window_height == document_height) {
+        //alert('Este es el fin de los tiempos!!!')
+        downloadContent(index, limit);
+        index += 5
+      }
+    }); 
+
+   
+
+  </script>
+{% endblock %}

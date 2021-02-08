@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+Servieat | Cambiar Datos del Usuario
+{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+  integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+  integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+  integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+  integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="{{url_for('.static', filename='perfilComensal.css')}}">
+<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+{% endblock %}
+
+{% block content %}
+
+
+<div id="cabezera" class="card">
+    <div class="card-body">
+        <form method="POST" action="/cambiarNombreComensal" >
+            {{ form.hidden_tag() }}
+            <div class="card">
+                <div class="card-body">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Nombre de la cuenta</h5>
+                            <div class="row">
+                                <div class="col-md-4">
+                                   <label for="inputText"></label>                              
+                                    {{ wtf.form_field(form.nombre, value=datos.nombre) }}
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="inputText"></label>
+                                    {{ wtf.form_field(form.apellidoP,value=datos.apellidoP) }}                                 
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="inputText"></label>
+                                    {{ wtf.form_field(form.apellidoM, value=datos.apellidoM) }}
+                                </div>
+                            </div>
+                            <br>
+                            <h5 class="card-title">Dirección de la cuenta</h5>
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <label for="inputText"></label>                              
+                                    {{ wtf.form_field(form.calle, value=datos.calle) }}
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="inputText"></label>
+                                    {{ wtf.form_field(form.numero, value=datos.numero) }}
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="inputText"></label>
+                                    {{ wtf.form_field(form.cruzamiento1, value=datos.cruzamiento1) }}
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="inputText"></label>
+                                    {{ wtf.form_field(form.cruzamiento2, value=datos.cruzamiento2) }}
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="inputText"></label>                               
+                                    {{ wtf.form_field(form.colonia, value=datos.colonia) }}
+                                </div> 
+                                <div class="col-md-2">
+                                    <label for="inputPhone"></label>
+                                    {{ wtf.form_field(form.telefono, value=datos.telefono) }}
+                                </div>   
+                            </div>                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="exampleFormControlTextarea1"></label>                                   
+                                      {{ wtf.form_field(form.referencia, placeholder=datos.referencia) }}
+                                  </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="botonDir" type="submit" class="btn btn-info" title="Guardar los datos ingresados">Actualizar</button>
+                    <a id="botonDir" href="javascript: history.go(-1)" class="btn btn-secondary" title="Cancelar operación">Cancelar</a>
+                </div>                
+            </div>
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}

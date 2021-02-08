@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="icon" type="image/png" href="/static/icon-servieat.png" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+    <script src="https://use.fontawesome.com/b947bfc611.js"></script>    
+    <link rel="stylesheet" href="{{url_for('.static', filename='layout.css')}}">
+    {% block styles %}
+    {% endblock %} 
+</head>
+
+<body>
+  <div class="page-wrapper chiller-theme toggled">
+    <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+      <i class="fas fa-bars" title="Expandir"></i>
+    </a>
+    <nav id="sidebar" class="sidebar-wrapper">
+      <div class="sidebar-content">
+        <div class="sidebar-brand">
+          <a href="{{url_for('home')}}" title="Servi-Eat Tizimín"><img src="/static/servieat-001.png" width="90%"
+              alt="Logo"></a>
+          <div id="close-sidebar">
+            <i class="fas fa-times" title="Contraer"></i>
+          </div>
+        </div>
+        <div class="sidebar-header">
+          <div class="user-pic">
+            <a href="{{url_for('datosComensal')}}" title="Perfil de: {{name}}"><img class="img-responsive img-rounded"
+                src="{{ datos.fotourl|default('/static/perfil02blanco.png') }}" alt="User picture"></a>
+          </div>
+          <div class="user-info">
+            <span class="user-name">
+              <strong>{{name}}</strong>
+            </span>
+            <span class="user-role">Comensal</span>
+            <span class="user-status">
+              <i class="fa fa-circle"></i>
+              <span>Online</span>
+            </span>
+          </div>
+        </div>
+        <!-- sidebar-header  -->
+
+        <div class="sidebar-menu">
+          <ul>
+            <li class="header-menu">
+              <span>General</span>
+            </li>
+            <li>
+              <a href="{{url_for('home')}}" title="Página de Inicio">
+                <i class="fa fa-home"></i>
+                <span>Home</span>
+              </a>
+            </li>           
+            <li class="sidebar-dropdown">
+              <a href="#" title="Restaurantes">
+                <i class="fa fa-cutlery"></i>
+                <span>Restaurantes</span>
+              </a>
+              <div class="sidebar-submenu">
+                <ul>
+                  <li title="Mostrar los restaurantes disponibles">
+                    <a href="{{url_for('restaurantesComensal')}}">Todos</a>
+                  </li>
+                  <li title="Mostrar lista de restaurantes favoritos">
+                    <a href="{{url_for('restFavoritos')}}">Restaurantes Favoritos</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            
+            <li class="sidebar-dropdown">
+              <a href="#" title="Menus">
+                <i class="fa fa-file-text"></i>
+                <span>Menus</span>
+              </a>
+              <div class="sidebar-submenu">
+                <ul>
+                  <li title="Mostrar todas las comidas disponibles">
+                    <a href="{{url_for('menuComensal')}}">Todos</a>
+                  </li>
+                  <li title="Mostrar lista de comidas favoritas">
+                    <a href="{{url_for('comidasFavoritas')}}">Comidas Favoritas</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li class="sidebar-dropdown">
+              <a href="#" title="Mis Pedidos">
+                <i class="fa fa-shopping-cart"></i>
+                <span>Mis Pedidos</span>
+              </a>
+              <div class="sidebar-submenu">
+                <ul>
+                  <li title="Estatus del Pedido Actual">
+                    <a href="#">Pedido Actual</a>
+                  </li>
+                  <li title="Historial de Pedidos">
+                    <a href="#">Historial de Pedidos</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li class="sidebar-dropdown">
+              <a href="#" title="Configuración de la Cuenta">
+                <i class="fa fa-cog fa-spin fa-3x fa-fw"></i>
+                <span>Configuración</span>
+              </a>
+              <div class="sidebar-submenu">
+                <ul>
+                  <li title="Cambiar nick y correo">
+                    <a href="{{url_for('cambiarDatos')}}">Cambiar Datos de la Cuenta</a>
+                  </li>
+                  <li title="Cambiar imagen del perfil">
+                    <a href="{{url_for('subirImagenComensal')}}">Cambiar Avatar</a>
+                  </li>
+                  <li title="Cambiar datos como nombre y/o dirección">
+                    <a href="{{url_for('cambiarNombreComensal')}}">Cambiar Datos del Usuario</a>
+                  </li>                
+                  <li title="Cambiar contraseña">
+                    <a href="{{url_for('cambiarContraseña')}}">Cambiar Password</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <!-- sidebar-menu  -->
+      </div>
+      <!-- sidebar-content  -->
+      <div class="sidebar-footer">
+
+        <a href="#" title="Mensajes">
+          <i class="fa fa-envelope"></i>
+          <span class="badge badge-pill badge-success notification"></span>
+        </a>
+        <a href="{{url_for('contacto')}}" title="Contactanos">
+          <i class="fa fa-mobile"></i>
+          <span class="badge badge-pill badge-success notification"></span>
+        </a>
+        <a href="#" title="Ayuda">
+          <i class="fa fa-question-circle"></i>
+          <span class="badge badge-pill badge-success notification"></span>
+        </a>
+        <a href="{{url_for('logout')}}" title="Cerrar Sesión">
+          <i class="fa fa-power-off"></i>
+        </a>
+      </div>
+    </nav>
+    <!-- sidebar-wrapper  -->
+    <main class="page-content">
+      <div class="container-fluid">
+        <div class="card" id="card-back">
+          <div class="card-header" id="card-back">
+          </div>
+        </div>
+        <h2></h2>
+        {%with messages = get_flashed_messages(with_categories=true)%}
+        {%if messages %}
+        {%for category, message in messages%}
+        <div id="mensajeFlash" class="alert alert-warning alert-dismissible fade show" role="alert">
+          {{message}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        {%endfor%}
+        {%endif%}
+        {%endwith%}
+        {% block content %}
+        {% endblock %}
+        </script>
+
+        <div id="cajacookies">
+          Éste sitio web usa cookies, si permanece aquí acepta su uso.
+          <p><button onclick="aceptarCookies()" class="pull-right"><i class="fa fa-times"></i> Aceptar y cerrar éste
+              mensaje</button>
+          </p>
+        </div>
+        <script>
+          /* ésto comprueba la localStorage si ya tiene la variable guardada */
+          function compruebaAceptaCookies() {
+            if (localStorage.aceptaCookies == 'true') {
+              cajacookies.style.display = 'none';
+            }
+          }
+          /* aquí guardamos la variable de que se ha
+          aceptado el uso de cookies así no mostraremos
+          el mensaje de nuevo */
+          function aceptarCookies() {
+            localStorage.aceptaCookies = 'true';
+            cajacookies.style.display = 'none';
+          }
+          /* ésto se ejecuta cuando la web está cargada */
+          $(document).ready(function () {
+            compruebaAceptaCookies();
+          });
+        </script>
+      </div>
+      <!-- Site footer -->
+      <footer class="site-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 col-md-6" id="acerca">
+              <ul class="footer-links" id="acerca">
+                <a href="">Acerca de Nosotros</a>
+                <i>|</i>
+                <a href="">Preguntas Frecuentes</a>
+                <i>|</i>
+                <a href="">Términos y Condiciones</a>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="container" id="social">
+          <div class="row" id="social">
+            <ul class="social-icons">
+              <li><a class="facebook" href="#" title="Siguenos en Facebook"><i class="fa fa-facebook"></i></a></li>
+              <li><a class="twitter" href="#" title="Siguenos en Twitter"><i class="fa fa-twitter"></i></a></li>
+            </ul>
+          </div>
+          <hr>
+        </div>
+        <div class="container">
+          <p class="copyright-text">Servieat Tizimín &copy; 2020.</p>
+        </div>
+      </footer>
+    </main>
+
+    <!-- page-content" -->
+  </div>
+  <!-- page-wrapper -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+  integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+  integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="{{url_for('.static', filename='layout.js')}}" charset="utf-8"> </script>
+
+</body>
+
+</html>

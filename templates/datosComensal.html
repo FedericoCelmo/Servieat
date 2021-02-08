@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+Servieat | Perfil
+{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+  integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+  integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+  integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+  integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="{{url_for('.static', filename='datosComensal.css')}}">
+<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div id="cabezera" class="card">
+  <div class="card-body" id="cardPadre">
+    <div id="textoBanner" class="card-body" style="background-image: url('/static/bannerComensal.png')">
+      <h2 class="card-title text-center">{{user.username}}</h2>
+      <img id="imagenPerfil" src="{{ datos.fotourl|default('/static/perfil02blanco.png') }}" alt="..." class="rounded">
+      <a href="{{url_for('subirImagenComensal')}}" class="btn btn-info btn-sm"
+        title="Cambiar imagen de perfil">Cambiar</a>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Datos de la cuenta</h5>
+        <div class="row">
+          <div class="col-md-12">
+            <strong>Usuario:</strong>
+            <label for="">{{user.username}}</label>
+            <p></p>
+            <strong>Correo:</strong>
+            <label for="">{{user.correo}}</label>
+            <p></p>
+            <a href="{{url_for('cambiarDatos')}}" class="btn btn-info btn-sm"
+              title="Cambiar los datos de la cuenta">Editar</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Nombre del usuario</h5>
+        <div class="row">
+          <div class="col-md-12">
+            <label for="">{{datos.nombre}}</label>
+            <label for="">{{datos.apellidoP}}</label>
+            <label for="">{{datos.apellidoM}}</label>
+            <p></p>
+            <h5 class="card-title">Dirección</h5>
+            <div class="form-row">
+              <div class="form-group col-md-12" value="">
+                <label for="inputAddress"><strong>Calle</strong></label>
+                <label for="">{{datos.calle}}, </label>
+                <label for="inputAddress">Número</label>
+                <label for="">{{datos.numero}}, </label>
+                <label for="inputAddress">entre </label>
+                <label for="">{{datos.cruzamiento1}}</label>
+                <label for="inputAddress"> y </label>
+                <label for="">{{datos.cruzamiento2}}</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inputAddress">Colonia </label>
+              <label for="">{{datos.colonia}}</label>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-12">
+                <label for="inputZip">{{datos.cp}}, </label>
+                <label for="">{{datos.telefono}}</label>
+              </div>
+              <div class="form-group">
+                <label for="exampleFormControlTextarea1"><strong>Referencias</strong></label>
+                <p></p>
+                <label for="">{{datos.referencia}}</label>
+              </div>
+            </div>
+            <a href="{{url_for('cambiarNombreComensal')}}" type="button" class="btn btn-info btn-sm"
+              title="Cambiar el nombre actual">Editar</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

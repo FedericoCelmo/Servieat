@@ -1,0 +1,441 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}
+Servieat | {{res.tipo}} {{res.nombre}}
+{% endblock %}
+
+{% block styles %}
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://kit.fontawesome.com/5760abe377.js" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+
+<link rel="stylesheet" href="{{url_for('.static', filename='restaurante.css')}}">
+{% endblock %}
+
+{% block content %}
+
+<!--
+      Header start 
+      ============================== -->
+{% set now = time.strftime('%H:%M %p') %}
+{% set ini = res.horarioinicial.strftime('%H:%M %p') %}
+{% set fin = res.horariocierre.strftime('%H:%M %p') %}
+
+{% if  ini <= now and fin <= now %}
+{% else %}
+{% endif %}
+
+<nav id="navigation">
+    <div class="container">
+        <div class="placeholder">           
+			<div class="parallax-window" data-parallax="scroll" data-image-src="">               
+				<div class="tm-header">
+                    <div class="row" id="horario">
+                        {% if  (ini <= now) and (fin <= now) %}                        
+                          <h6 id="abierto"><i class="fa fa-circle"></i> Abierto Ahora</h6>                       
+                        {% else %}                       
+                          <h6 id="cerrado"><i class="fa fa-circle"></i> Cerrado</h6>                 
+                        {% endif %}                   
+                    </div>
+					<div class="row tm-header-inner">                      
+						<div class="col-md-6 col-12">
+							<img src="{{ res.fotourl|default('/static/restblanco.png') }}" alt="Logo" class="tm-site-logo" /> 
+							<div class="tm-site-text-box">
+								<h1 class="tm-site-title">{{res.nombre}}</h1>
+                               
+                                <h6 class="tm-site-description">
+                                    {% if 'Me Gusta' in me.estatus %}
+                                      {% if total == 1 %}                                  
+                                                                            
+                                      {% else %}                                   
+                                      
+                                      {% endif %}                                      
+                                    {% endif %}                                   
+                                </h6>	                              
+							</div>
+						</div>
+                        <nav class="col-md-6 col-12 tm-nav">
+                            <ul class="social">
+                                <li><a class="facebook" href="{{res.facebook}}" title="Siguenos en Facebook"><i class="fa fa-facebook"></i></a></li>
+                                <li><a class="url" href="https://{{res.url}}" title="Vistanos en nuestra página web"><i class="fa fa-globe"></i></a></li>                              
+                            </ul>
+                        </nav>
+					</div>
+				</div>
+			</div>
+		</div>       
+    </div><!-- .container close -->
+</nav><!-- header close -->
+
+<div id="stats" class="row">
+    <div class="col-sm-2">
+      <div class="card">
+        <div id="contenido" class="card-body">
+          <i id="icono" class="fa fa-building" aria-hidden="true"></i>
+          <p class="card-title">{{res.tipo}}</p>      
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-2">
+        <div class="card">
+          <div id="contenido" class="card-body">
+            <i id="icono" class="fa fa-users" aria-hidden="true"></i>
+            <p class="card-title">              
+                {% if total == 1 %}
+                  {{total}} seguidor<br>                                 
+                {% else %}
+                  {{total}} seguidores<br>                               
+                {% endif %}
+            </p>                      
+          </div>
+        </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="card">
+        <div id="contenido" class="card-body">
+          <i id="icono" class="fa fa-cart-plus" aria-hidden="true"></i>
+          <p class="card-title">2 Ordenes realizadas</p>                
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-2">
+        <div class="card">
+          <div id="contenido" class="card-body">
+            <i id="icono" class="fa fa-list-ol" aria-hidden="true"></i>
+            <p class="card-title">
+                {% if res.menu.count() == 1 %}
+                  {{res.menu.count()}} producto
+                {% else %}
+                  {{res.menu.count()}} productos
+                {% endif %}
+            </p>                  
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-2">
+        <div class="card">
+        <div id="contenido" class="card-body">
+        
+        {% if me %}
+            {% if 'Me Gusta' in me.estatus %}
+            <p class="card-title">
+            <form method="POST" action="/noMeGusta/{{res.idrestaurantero}}" enctype="multipart/form-data">
+                <p> <button type="submit" class="btnMeGusta" title="Quitar de tus favoritos"><i id="iconoFav" class="fa fa-star"
+                            aria-hidden="true"></i></buttom>
+                </p>
+            </form>
+            En tus favoritos
+            </p>
+            {% else %}
+            <p class="card-title">
+            <form method="POST" action="/meGusta/{{res.idrestaurantero}}" enctype="multipart/form-data">
+                <p> <button type="submit" class="btnMeGusta" title="Al añadir a tus favoritos, tambien seguiras este negocio"><i id="iconoNoFav" class="fa fa-star"
+                            aria-hidden="true"></i></buttom>
+                </p>
+            </form>
+            Añadir a favoritos
+            </p>
+            {% endif %}
+        {% else %}
+            <p class="card-title">
+            <form method="POST" action="/meGusta/{{res.idrestaurantero}}" enctype="multipart/form-data">
+                <p> <button type="submit" class="btnMeGusta" title="Al añadir a tus favoritos, tambien seguiras este negocio"><i id="iconoNoFav" class="fa fa-star"
+                            aria-hidden="true"></i></buttom>
+                </p>
+            </form>
+            Añadir a favoritos
+            </p>
+        {% endif %}        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+    <div class="card" id="textTop">
+        <div class="card-body">
+            Bienvenido a "{{res.nombre}}"
+            <br>
+            <p id="eslogan">{{res.eslogan}}</p>            
+        </div>
+    </div>
+</div>
+<div class="container" id="info">
+    <div class="col-md-6">
+        <div class="card" id="descripcion">
+            <div class="card-body">
+                <h5 class="card-title">Acerca de Nosotros</h5>
+                <p class="card-text">{{res.descripcion}}</p>
+                <p class="card-text"><small class="text-muted">Abrimos de {{res.diaslaborales}} con un horario de
+                        {{res.horarioinicial.strftime('%H:%M %p')}} a {{res.horariocierre.strftime('%H:%M %p')}}</small></p>
+                {% if 'Sin descanso' in res.diadescanso %}
+                <p class="card-text"><small class="text-muted">Trabajamos sin descanso</small></p>
+                {%else%}
+                <p class="card-text"><small class="text-muted">Descansamos {{res.diadescanso}}</small></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card" id="direccion">
+            <div class="card-body">
+                <h5 class="card-title">Dirección</h5>
+                <p class="card-text">
+                <p class="facebook" href="#"><i class="fa fa-address-card-o"></i>
+                    Calle: {{res.calle}} entre {{res.cruzamiento1}} y {{res.cruzamiento2}}, número {{res.numero}}.<br>
+                    Colonia {{res.colonia}}, CP {{res.cp}},<br>
+                    {{res.referencia}}
+                </p>
+                <p class="twitter" href=""><i class="fa fa-phone"></i> {{res.telefono}}</p>
+                <a class="whatsapp" href="https://api.whatsapp.com/send?phone=[+52][{{res.whatsapp}}]" title="Envianos un whatsapp"><i class="fa fa-whatsapp"></i> {{res.whatsapp}}</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<!--
+      Slider start
+      ============================== -->
+<section id="slider">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="galery">
+                    <div class="title">
+                        {% if especiales %}
+                        <h3>Nuestros <span>Especiales</span></h3>
+                       
+                        <div class="container" id="galeria">
+                            <div class="gallery-wrap">
+                            {% for m in especiales[:5] %}                                                           
+                                <a href="/verComida/{{m.idmenu}}" title="{{m.nombre}}, Ver más detalles" class="item item-1 {% if loop.index == 1 %} active {% endif %}"
+                                    id="slide{{ loop.index }}"
+                                    style="background-image: url('{{ m.fotourl|default('/static/restblanco.png') }}')">
+                                    <p id="textEsp">{{m.nombre}}</p>
+                                </a>                              
+                                {% endfor %}                           
+                            </div>
+                        </div>
+                        {% else %}
+                            
+                        {% endif %}
+                    </div>
+                </div>
+            </div><!-- .col-md-12 close -->
+        </div><!-- .row close -->
+    </div><!-- .container close -->
+</section><!-- slider close -->
+
+<!--price start============================ -->
+<section id="price">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="block">
+                    {% if menu.items %} 
+                    <h1 id="menu" class="heading wow fadeInUp" >Nuestro
+                        <span>MENU</span></h1>             
+                        <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" method="POST" action="/buscarMenuRest/{{res.idrestaurantero}}">                       
+                            <input id="buscar" class="form-control form-control-sm ml-3 w-75" name="buscar" type="search" placeholder="&#xF002; Busca tu comida favorita" style="font-family:Arial, FontAwesome"
+                            aria-label="Search" title="Buscar en el menu">
+                        </form>                      
+                    <div class="pricing-list">
+                        <ul>                          
+                              {% for m in menu.items %}  
+                                <li class="wow fadeInUp">
+                                  <div class="item">
+                                    <div class="item-title">
+                                        <h2>{{m.nombre}} ({{m.tipo}})</h2>
+                                        <div class="border-bottom"></div>
+                                        <span>$ {{m.precio}}</span>
+                                    </div>
+                                    <p>{{m.descripcion}}</p>
+                                    <p>
+                                        <a type="button" class="btn btn-light-info" href="#" role="button" title="Agregar al pedido">Agregar</a>
+                                        <a id="btnDetalles" type="button" class="btn btn-light-info" href="/verComida/{{m.idmenu}}" role="button" title="Ver más detalles">Ver</a>
+                                    </p>
+                                   </div>
+                                </li>                                            
+                            {% endfor %}                                                                                                                                     
+                        </ul>      
+                                    
+                        
+                    </div>  
+                    {% else %}  
+                                    
+                    {% endif %}                  
+                </div>
+<!--Paginación-->
+{% if menu.items %}
+<nav class="Page navigation example">
+  <ul id="paginacion" class="pagination justify-content-center">     
+    {% if menu.has_prev %}
+      <li  class="page-item"> <a id="previous" title="Página anterior" class="page-link btn" href="{{ url_for('restaurante',id=res.idrestaurantero ,page=menu.prev_num) }}">Anterior</a></li>
+    {% else %}
+      <li  class="page-item"><a id="previous" class="page-link btn disabled" href="#">Anterior</a></li>
+    {% endif %}
+
+    {% for page_num in menu.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+      {% if page_num %}     
+        {% if menu.page == page_num %}
+          <li class="page-item active"> <a id="page-active"  class="page-link" href="{{ url_for('restaurante' ,id=res.idrestaurantero, page=page_num) }}" title="Página {{page_num}}">{{ page_num }}</a></li>
+        {% else %}
+          <li class="page-item"> <a id="page"  class="page-link" href="{{ url_for('restaurante' ,id=res.idrestaurantero, page=page_num) }}" title="Página {{page_num}}">{{ page_num }}</a></li>
+        {% endif %}
+      {% else %}
+      
+      {% endif %}
+    {% endfor %}
+      
+    {% if menu.has_next %}
+      <li class="page-item"> <a id="next" title="Siguiente página" class="page-link btn" href="{{ url_for('restaurante' ,id=res.idrestaurantero, page=menu.next_num) }}">Siguiente</a></li>
+    {% else %}
+      <li class="page-item"><a id="next" class="page-link btn disabled" href="#">Siguiente</a></li>
+    {% endif %}           
+  </ul>
+</nav> 
+{% else %}
+{% endif %}
+<!--End Paginacion-->
+            </div><!-- .col-md-12 close -->
+        </div><!-- .row close -->
+    </div><!-- .containe close -->
+</section><!-- #price close -->
+
+<div class="accordion" id="accordionExample">
+  <div id="cardComen" class="card">
+    <div  class="card-header" id="headingOne">
+      <h2 class="mb-0">
+        <button id="btnComen" class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+          <div id="comentarios" title="Mostrar comentarios">
+            <h4>Comentarios {% if totalComentarios == 0 %}{% else %} {% if totalComentarios == 1 %}({{totalComentarios}} comentario){% else %}({{totalComentarios}} comentarios){% endif %}{% endif %}</h4>
+          </div>
+        </button>
+      </h2>
+    </div>
+
+    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+      <div class="card-body">
+        <div id="footerCom" class="card__footer">
+            <div class="comment_block">
+            <!-- used by #{user} to create a new comment -->
+              <div class="create_new_comment">
+                <!-- current #{user} avatar -->
+                <div class="user_avatar">
+                   <img src="{{ datos.fotourl|default('/static/perfil02blanco.png') }}">
+              </div><!-- the input field --><div class="input_comment">
+                <form method="POST" action="/comentarRest/{{res.idrestaurantero}}">
+                    <input type="text" minlength="4" maxlength="200" placeholder="Escribe que te pareció..." name="comentario" required>
+                </form>
+            </div>
+          </div>  
+          {% if comen.items %}
+           <!-- new comment -->
+           {% for c in comen.items %}           
+          <div id="infinite" class="new_comment">
+              <!-- build comment -->
+              <ul class="user_comment">
+                  <!-- current #{user} avatar -->
+                  <div class="user_avatar">                       
+                      <img src="{{ c.comensal.fotourl|default('/static/perfil02blanco.png') }}">
+                  </div><!-- the comment body --><div class="comment_body">
+                      <p>{{c.comentario}}</p>
+                  </div>
+                   <!-- comments toolbar -->
+                  <div class="comment_toolbar">
+                       <!-- inc. date and time -->
+                      <div class="comment_details">
+                          <ul>
+                              <li><i class="fa fa-clock-o"></i> {{c.fecha.strftime('%H:%M %p')}}</li>
+                              <li><i class="fa fa-calendar"></i> {{c.fecha.strftime('%d/%m/%Y')}}</li>
+                              <li><i class="fa fa-user"></i> <span class="user">{{c.comensal.user.username}}</span></li>
+                              {% if datos.user_iduser == c.comensal_user_iduser %}
+                              <li><a id="eliminar" href="/deleteComentarioRest/{{c.idcomentariorest}}/{{res.idrestaurantero}}" onclick="return confirm('¿Estás seguro que deseas eliminar el comentario?');" 
+                                title="Eliminar comentario"><i class="fa fa-trash"></i><span class="user"></span></a></li>
+                              {% endif %}
+                          </ul>                 
+                      </div>
+                  </div>
+              </ul>       
+          </div>
+          {% endfor %}
+          {% else %}
+          <p>Parece que este negocio aún no tiene comentarios, ¡Sé el primero en comentar!</p>
+          {% endif %}
+        </div>
+        </div>
+        
+        <!--Paginación de comentarios-->
+        {% if comen.items %}
+        <nav class="Page navigation example">
+          <ul id="paginacion" class="pagination justify-content-center">     
+            {% if comen.has_prev %}
+              <li  class="page-item"> <a id="previous" title="Página anterior" class="page-link btn" href="{{ url_for('restaurante',id=res.idrestaurantero ,pageComen=comen.prev_num) }}">Anterior</a></li>
+            {% else %}
+              <li  class="page-item"><a id="previous" class="page-link btn disabled" href="#">Anterior</a></li>
+            {% endif %}
+            {% for page_num in comen.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+              {% if page_num %}     
+                {% if comen.page == page_num %}
+                  <li class="page-item active"> <a id="page-active"  class="page-link" href="{{ url_for('restaurante' ,id=res.idrestaurantero, pageComen=page_num) }}" title="Página {{page_num}}">{{ page_num }}</a></li>
+                {% else %}
+                  <li class="page-item"> <a id="page"  class="page-link" href="{{ url_for('restaurante' ,id=res.idrestaurantero, pageComen=page_num) }}" title="Página {{page_num}}">{{ page_num }}</a></li>
+                {% endif %}
+              {% else %}
+              
+              {% endif %}
+            {% endfor %}     
+            {% if comen.has_next %}
+              <li class="page-item"> <a id="next" title="Siguiente página" class="page-link btn" href="{{ url_for('restaurante' ,id=res.idrestaurantero, pageComen=comen.next_num) }}">Siguiente</a></li>
+            {% else %}
+              <li class="page-item"><a id="next" class="page-link btn disabled" href="#">Siguiente</a></li>
+            {% endif %}           
+          </ul>
+        </nav> 
+        {% else %}
+        
+        {% endif %}
+        <!--End Paginacion-->
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+<script>
+  $(document).ready(function(){ 
+   $('#headingOne').on('click',function(){
+      $('#collapseOne').toggle();
+   });
+});
+</script>
+
+
+
+<span class="ir-arriba" title="Ir arriba de la página"><i class="fa fa-arrow-up" aria-hidden="true"></i></span>
+<script>
+  $(document).ready(function(){
+ 
+ $('.ir-arriba').click(function(){
+   $('body, html').animate({
+     scrollTop: '0px'
+   }, 300);
+ });
+
+ $(window).scroll(function(){
+   if( $(this).scrollTop() > 0 ){
+     $('.ir-arriba').slideDown(300);
+   } else {
+     $('.ir-arriba').slideUp(300);
+   }
+ });
+
+});
+</script>
+{% endblock %}
